@@ -46,11 +46,19 @@ text {
   font-weight: 300;
 }
 
-#intro-format {
+#intro-format-green {
   background-color: #1a9754;
   color: #ffffff;
   border-radius: 2px;
-  font-weight: bold;
+  font-weight: 400;
+  
+}
+
+#intro-format-grey {
+  background-color: #cecfc8;
+  color: #424242;
+  border-radius: 2px;
+  font-weight: 400;
   
 }
 
