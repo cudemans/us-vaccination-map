@@ -6,13 +6,14 @@ const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
 // Data
 const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json'
-const educationURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json'
+// const vacURL = fetch('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data').then((resp) => resp.json())
 
 // set up global variables
 let countyData
 let educationData
-const increments = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100']
-const colors = ["#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41"]
+let vacData
+const increments = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '', "No data"]
+const colors = ["#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8"]
 let i = 0
 
 // Create SVG
@@ -27,15 +28,17 @@ const g = svg.append("g")
 // Draw map
 let drawMap = () => {
 
+    // Add tooltip
     const tip = d3.tip()
         .attr("class", "d3-tip")
         .html(() => {
-            let text = `<strong><span style="color: #6e6d6d; font-size: 15px">${educationData.area_name}</strong></span><br>`
+            let text = `<strong><span style="color: #6e6d6d; font-size: 15px"></strong></span><br>`
             text += `<p style="color: #6e6d6d; font-size: 15px">Number of vaccinations</p>`
             return text
         })
     g.call(tip)
 
+    // Add app
     g.selectAll("path")
         .data(countyData)
         .enter()
@@ -46,11 +49,14 @@ let drawMap = () => {
         .attr("stroke-width", "0.5px")
         .attr("fill", (item) => {
             let fips = item['id']
-            let county = educationData.find(county => {
-                return county['fips'] === fips
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
             })
-            let percentage = county['bachelorsOrHigher']
-            if (percentage <= 10) {
+            let percentage = county['Series_Complete_Pop_Pct']
+            if (percentage == null) {
+                return "#cecfc8"
+            }
+            else if (percentage <= 10) {
                 return "#e6f3ec"
             } else if (percentage <= 20) {
                 return "#cce8d9"
@@ -81,14 +87,13 @@ let drawMap = () => {
             tip.hide()
         })
         
-
         // Create legend
         const LegendArea = d3.select("#legend").append("svg")
             .attr("width", WIDTH)
             .attr("height", 50)
 
         const legendInner = LegendArea.append("g")
-            .attr("transform", `translate(${WIDTH * 0.25}, 20)`)
+            .attr("transform", `translate(${WIDTH * 0.19}, 20)`)
     
         legendInner.append("text")
             .attr("class", "legend-header")
@@ -100,6 +105,7 @@ let drawMap = () => {
 
             increments.forEach((increment, i) => {
                 const legendRow = legendInner.append("g")
+                    .attr("class", "legendRow")
                     .attr("transform", `translate(${i * 50}, 5)`)
             
                 legendRow.append("rect")
@@ -132,7 +138,6 @@ let drawMap = () => {
                     .attr("height", "14px")
                     .attr("width", "1.5px")
 
-                
             })
 
     }
@@ -147,16 +152,24 @@ d3.json(countyURL).then(
             console.log(countyData);
         }
 
-        d3.json(educationURL).then(
-            (data, error) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    educationData = data
-                    console.log(educationData);
-                    drawMap()
+            d3.json("data/cdc.json").then(
+                (data, error) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        vacData = data['vaccination_county_condensed_data']
+                    
+                        delete vacData.runid
+
+                        vacData = vacData.map(data => {
+                            data.FIPS = Number(data.FIPS)
+                            return data
+                        })
+                        
+                        console.log(vacData)
+                        drawMap()
+                    }
                 }
-            }
-        )
+            )
     }
 )

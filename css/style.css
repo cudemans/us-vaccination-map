@@ -46,6 +46,14 @@ text {
   font-weight: 300;
 }
 
+#intro-format {
+  background-color: #1a9754;
+  color: #ffffff;
+  border-radius: 2px;
+  font-weight: bold;
+  
+}
+
 #legend {
   width: 100%;
   justify-content: center;
@@ -85,6 +93,6 @@ text {
 }
 
 .some {
-  color:#6e6d6d
+  color:#ebe4e4
 }
 }
