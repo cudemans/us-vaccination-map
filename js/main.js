@@ -70,20 +70,17 @@ let drawMap = () => {
                 return "#1a9754"
             } else return "#008b41"
         })
+        
         .on("mouseover", function(d) {
             d3.select(this).classed("shaded", true)
-            tip.show()
-        
-            
+            tip.show()    
         })
-        // .on("mouseover", tip.show)
+        
         .on("mouseout", function(d) {
             d3.select(this).classed("shaded", false)
             tip.hide()
-            
-        
         })
-        // .on("mouseout", tip.hide)
+        
 
         // Create legend
         const LegendArea = d3.select("#legend").append("svg")
