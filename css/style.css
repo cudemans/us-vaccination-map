@@ -33,7 +33,7 @@ text {
   margin-top: 10px;
   letter-spacing: 2px;
   color: #302f2f;
-  width: 70%
+  width: 70%;
 }
 
 #intro {
@@ -52,7 +52,6 @@ text {
   color: #ffffff;
   border-radius: 2px;
   font-weight: 400;
-  
 }
 
 #intro-format-grey {
@@ -60,7 +59,31 @@ text {
   color: #424242;
   border-radius: 2px;
   font-weight: 400;
-  
+}
+
+.button-container {
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.button {
+  background-color: #e3e4e3;
+  border: none;
+  color: rgb(75, 73, 73);
+  padding: 10px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 17px;
+  transition: border 100;
+}
+
+.clicked {
+  background-color: white;
+  border: 1px solid #575555;
 }
 
 #legend {
@@ -70,7 +93,6 @@ text {
 }
 
 #chart-area {
-  margin-bottom: 50;
   align-items: center;
 }
 
@@ -99,9 +121,4 @@ text {
 .legend-lines {
   fill: #6e6d6d;
   opacity: 0.5;
-}
-
-.some {
-  color:#ebe4e4
-}
 }

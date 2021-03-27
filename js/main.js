@@ -1,7 +1,7 @@
 
 // Set up canvas
 const MARGINS = {TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10};
-const HEIGHT = 750 - MARGINS.TOP - MARGINS.BOTTOM
+const HEIGHT = 620 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
 // Data
@@ -12,8 +12,10 @@ const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choro
 let countyData
 let educationData
 let vacData
-const increments = ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100', '', "No data"]
-const colors = ["#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8"]
+var btnValue
+
+const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
+const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
 let i = 0
 
 // Create SVG
@@ -38,21 +40,53 @@ let drawMap = () => {
         })
     g.call(tip)
 
+    // add transiton
+    const t = d3.transition()
+		.duration(100)
+
+
+    // Filtering for only certain data
+    // THIS RETURNS WHAT I NEED IT TO BUT BUTTONS DON"T REACT
+   var value = $(".button").on('click', function() {
+        var thisBtn = $(this)
+        thisBtn.addClass('clicked').siblings().removeClass("clicked")
+        return thisBtn
+   }).val()
+
+   
+    console.log(btnValue)
+
     // Add app
-    g.selectAll("path")
+    //Bind data
+    const paths = g.selectAll("path")
         .data(countyData)
-        .enter()
+
+    //Exit
+    paths.exit().remove()
+
+    // Merge
+    paths.enter()
         .append("path")
         .attr("d", d3.geoPath())
         .attr("class", "county")
         .attr("stroke", "#ffffff")
         .attr("stroke-width", "0.5px")
+        .on("mouseover", function(d) {
+            d3.select(this).classed("shaded", true)
+            tip.show()    
+        })
+        .on("mouseout", function(d) {
+            d3.select(this).classed("shaded", false)
+            tip.hide()
+        })
+        .merge(paths)
+        .transition(t)
         .attr("fill", (item) => {
             let fips = item['id']
             let county = vacData.find(d => {
                 return d['FIPS'] === fips
             })
-            let percentage = county['Series_Complete_Pop_Pct']
+            let percentage = county[value]
             if (percentage == null) {
                 return "#cecfc8"
             }
@@ -77,15 +111,7 @@ let drawMap = () => {
             } else return "#008b41"
         })
         
-        .on("mouseover", function(d) {
-            d3.select(this).classed("shaded", true)
-            tip.show()    
-        })
         
-        .on("mouseout", function(d) {
-            d3.select(this).classed("shaded", false)
-            tip.hide()
-        })
         
         // Create legend
         const LegendArea = d3.select("#legend").append("svg")
@@ -133,12 +159,18 @@ let drawMap = () => {
                         }
                     })
 
+                
+
                 legendRow.append("rect")
                     .attr("class", "legend-lines")
                     .attr("height", "14px")
                     .attr("width", "1.5px")
 
+            
+
             })
+
+            
 
     }
 
