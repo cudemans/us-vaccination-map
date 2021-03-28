@@ -1,7 +1,7 @@
 
 // Set up canvas
 const MARGINS = {TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10};
-const HEIGHT = 620 - MARGINS.TOP - MARGINS.BOTTOM
+const HEIGHT = 640 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
 // Data
@@ -10,11 +10,9 @@ const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choro
 
 // set up global variables
 let countyData
-let educationData
 let vacData
-var btnValue
 let i = 0
-var button
+let button
 let percentage
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
@@ -40,13 +38,22 @@ const tip = d3.tip()
 })
 g.call(tip)
 
+// Data credit
+// const credit = g.append("text")
+//     .attr("class", "credit")
+//     .attr("x", WIDTH - 230)
+//     .attr("y", HEIGHT + 20)
+//     .attr("font-size", "12px")
+//     .attr("color", "white")
+//     .text("Data: CDC | Updated: March 26, 2021")
+
 
 // Create legend 
 const LegendArea = d3.select("#legend").append("svg")
 .attr("width", WIDTH)
 .attr("height", 50)
 
-const legendInner = LegendArea.append("g")
+let legendInner = LegendArea.append("g")
 .attr("transform", `translate(${WIDTH * 0.19}, 20)`)
 
 legendInner.append("text")
@@ -93,48 +100,30 @@ increments.forEach((increment, i) => {
         .attr("width", "1.5px")
 })
 
+
+
+// Update button based on whether it is selected
 $(".button").on('click', function() {
     var thisBtn = $(this)
     thisBtn.addClass('clicked').siblings().removeClass("clicked")
     return thisBtn
  })
 
-
+// Select data from button value
 $(".button").on("click", function() {
      button = $(this).val()
-     
+     // Update map based on new data
      drawMap()
-     console.log(button)
 })
 
-// $("#total-button").click()
 
 
 // Draw map
 let drawMap = () => {
 
-    // Initiate counter
-    
-
     // add transiton
     const t = d3.transition()
-		.duration(100)
-
-
-    // Filtering for only certain data
-    // THIS RETURNS WHAT I NEED IT TO BUT BUTTONS DON"T REACT
-   
-
-   var thisValue
-   $('button').click(function() {
-       var thisBtn = $(this)
-       thisValue = thisBtn.val()
-       
-   })
-
-
-
-
+		.duration(50)
    
     // Add app
     //Bind data

@@ -31,6 +31,7 @@ text {
   font-family: "Lato";
   font-weight: 400;
   margin-top: 10px;
+  line-height: 110%;
   letter-spacing: 2px;
   color: #302f2f;
   width: 70%;
@@ -121,4 +122,8 @@ text {
 .legend-lines {
   fill: #6e6d6d;
   opacity: 0.5;
+}
+
+.credit {
+  color: #bdbbbb;
 }
