@@ -15,6 +15,7 @@ let i = 0
 let button
 let percentage
 
+
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
 
@@ -32,8 +33,8 @@ const g = svg.append("g")
 const tip = d3.tip()
 .attr("class", "d3-tip")
 .html(() => {
-    let text = `<strong><span style="color: #6e6d6d; font-size: 15px"></strong></span><br>`
-    text += `<p style="color: #6e6d6d; font-size: 15px">Number of vaccinations</p>`
+    let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County</strong></span><br>`
+    text += `<p style="color: #6e6d6d; font-size: 12px; line-spacing:70%">Number of vaccinations</p>`
     return text
 })
 g.call(tip)
