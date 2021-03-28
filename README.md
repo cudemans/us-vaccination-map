@@ -13,5 +13,3 @@ The map is currently feature-light, but I'll add them when I can. They include:
 - Pull data from CDC API
 
 **Caveat:** The visualization still needs to be annotated, and currently gives no indication how complete the data is. I'll be adding this in soon.
-
-![Vaccinations](/img/us-vac.png)
