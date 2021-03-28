@@ -15,6 +15,7 @@ let vacData
 var btnValue
 let i = 0
 var button
+let percentage
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
@@ -92,16 +93,16 @@ increments.forEach((increment, i) => {
         .attr("width", "1.5px")
 })
 
-var value = $(".button").on('click', function() {
+$(".button").on('click', function() {
     var thisBtn = $(this)
     thisBtn.addClass('clicked').siblings().removeClass("clicked")
     return thisBtn
-}).val()
+ })
 
-console.log(value)
 
 $(".button").on("click", function() {
      button = $(this).val()
+     
      drawMap()
      console.log(button)
 })
@@ -165,7 +166,9 @@ let drawMap = () => {
             let county = vacData.find(d => {
                 return d['FIPS'] === fips
             })
-            let percentage = county[button]
+            if (button == null) {
+                percentage = county["Series_Complete_Pop_Pct"]
+            } else percentage = county[button]
             if (percentage == null) {
                 return "#cecfc8"
             } 
