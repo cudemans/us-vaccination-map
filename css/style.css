@@ -141,3 +141,14 @@ text {
 .credit {
   color: #bdbbbb;
 }
+
+.text-container {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  width: 60%;
+  line-height: 1.5;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  font-family: "Lato";
+  font-weight: 300;
+}

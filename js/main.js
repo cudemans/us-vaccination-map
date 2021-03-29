@@ -4,9 +4,6 @@ const MARGINS = {TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10};
 const HEIGHT = 640 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
-// Get geodata
-const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json'
-
 // set up global variables
 let countyData
 let stateData
@@ -14,6 +11,7 @@ let vacData
 let i = 0
 let button
 let percentage
+let usData
 
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
@@ -21,7 +19,7 @@ const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d
 
 
 // Create SVG
-const svg = d3.select("#chart-area").append("svg")
+const svg = d3.select("#map-area").append("svg")
     .attr("height", HEIGHT + MARGINS.TOP + MARGINS.BOTTOM)
     .attr("width", WIDTH + MARGINS.LEFT - MARGINS.RIGHT)
 
@@ -202,7 +200,7 @@ g.call(tip)
 
 
 // Read in and transform data, call the drawMap function
-d3.json(countyURL).then(
+d3.json("data/counties.json").then(
     (data, error) => {
         if (error) {
         } else {
@@ -222,9 +220,11 @@ d3.json(countyURL).then(
                         vacData = vacData.map(data => {
                             data.FIPS = Number(data.FIPS)
                             return data
+                    
                         })
-                        // console.log(vacData)
+                        console.log(vacData)
                         drawMap()
+                       
                     }
                 }
             )
@@ -240,3 +240,32 @@ d3.json(countyURL).then(
 //     return text
 // })
 // g.call(tip)
+
+
+
+const chart =d3.select("#chart-area").append("svg")
+    .attr("height", HEIGHT - 200)
+    .attr("width", WIDTH)
+
+const gChart = svg.append('g')
+    .attr("transform", `translate(${MARGINS.TOP}, ${MARGINS.LEFT})`)
+
+
+let drawChart = () => {
+
+}
+
+d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
+    (data, error) => {
+        if (error) {
+            console.log(error)
+        } else {
+            usData = data.filter(d => d.Entity === "United States")
+            usData.forEach(d => {
+                d.new_vaccinations_smoothed = Number(d.new_vaccinations_smoothed)
+            });
+            console.log(usData)
+        }
+        drawChart()
+    }
+)
