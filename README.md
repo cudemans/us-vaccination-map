@@ -10,9 +10,10 @@ The map is currently feature-light, but I'll add them when I can. They include:
 
 - Working tooltips
 - Zoom functionality
-- Data Credit
+- ~~Data Credit~~
 - ~~Dynamic legend text~~
 - Pull data from CDC API
 - Offset "no data" label
+- ~~Update information~~
 
 **Caveat:** The visualization still needs to be annotated, and currently gives no indication how complete the data is. I'll be adding this in soon.

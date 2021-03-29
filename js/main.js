@@ -29,15 +29,6 @@ const svg = d3.select("#chart-area").append("svg")
 const g = svg.append("g")
     .attr("transform", `translate(0, ${MARGINS.LEFT})`)
 
-// Add tooltip
-const tip = d3.tip()
-.attr("class", "d3-tip")
-.html(() => {
-    let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County</strong></span><br>`
-    text += `<p style="color: #6e6d6d; font-size: 12px; line-spacing:70%">Number of vaccinations</p>`
-    return text
-})
-g.call(tip)
 
 // Create legend 
 const LegendArea = d3.select("#legend").append("svg")
@@ -93,10 +84,9 @@ increments.forEach((increment, i) => {
 })
 
 // Data credit
-
 const credit = g.append("text")
     .attr("class", "credit")
-    .attr("x", WIDTH - 690)
+    .attr("x", WIDTH - 400)
     .attr("y", HEIGHT + 20)
     .attr("font-size", "12px")
     .attr("opacity", "0.5")
@@ -117,8 +107,15 @@ $(".button").on("click", function() {
      drawMap()
 })
 
+
 // Draw map
 let drawMap = () => {
+
+// Tooltip
+const tip = d3.tip()
+    .attr("class", "d3-tip")
+    .html(d => d)
+g.call(tip)
 
     // add transiton
     const t = d3.transition()
@@ -131,7 +128,7 @@ let drawMap = () => {
 
     //Exit
     paths.exit().remove()
-
+    
     // Merge
     paths.enter()
         .append("path")
@@ -192,6 +189,14 @@ let drawMap = () => {
                 return "Percentage of 18+ vaccinated"
             } else return "Percentage of 65+ vaccinated"
         })
+
+    // Zoom functionality
+    // const zoom = d3.zoom()
+    //     .scaleExtent([1, 8])
+    //     .extent([[0, 0], [WIDTH, HEIGHT]])
+    //     .on("zoom", () => g.attr("transform", d3.event.transform));
+    
+    // svg.call(zoom);
     
     }
 
@@ -203,7 +208,6 @@ d3.json(countyURL).then(
         } else {
             countyData = topojson.feature(data, data.objects.counties).features
             stateData = topojson.feature(data, data.objects.states).features
-            
         }
 
             d3.json("data/cdc_data.json").then(
@@ -219,7 +223,7 @@ d3.json(countyURL).then(
                             data.FIPS = Number(data.FIPS)
                             return data
                         })
-                        console.log(vacData)
+                        // console.log(vacData)
                         drawMap()
                     }
                 }
@@ -228,3 +232,11 @@ d3.json(countyURL).then(
 )
 
 
+// const tip = d3.tip()
+// .attr("class", "d3-tip")
+// .html(() => {
+//     let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County</strong></span><br>`
+//     text += `<p style="color: #6e6d6d; font-size: 12px; line-spacing:70%">Number of vaccinations</p>`
+//     return text
+// })
+// g.call(tip)
