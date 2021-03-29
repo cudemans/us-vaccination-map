@@ -80,6 +80,8 @@ text {
   display: inline-block;
   font-size: 17px;
   transition: border 100;
+  margin-top: 20px;
+  margin-bottom: -15px;
 }
 
 .clicked {

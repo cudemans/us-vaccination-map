@@ -9,10 +9,12 @@ const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choro
 
 // set up global variables
 let countyData
+let stateData
 let vacData
 let i = 0
 let button
 let percentage
+
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
@@ -98,7 +100,7 @@ increments.forEach((increment, i) => {
         .attr("height", "14px")
         .attr("width", "1.5px")
 })
-
+    
 // Update button based on whether it is selected
 $(".button").on('click', function() {
     var thisBtn = $(this)
@@ -113,14 +115,13 @@ $(".button").on("click", function() {
      drawMap()
 })
 
-
 // Draw map
 let drawMap = () => {
 
     // add transiton
     const t = d3.transition()
 		.duration(50)
-   
+
     // Add app
     //Bind data
     const paths = g.selectAll("path")
@@ -178,6 +179,17 @@ let drawMap = () => {
             } else return "#008b41"
         })
 
+
+    $(".legend-header").text(function() {
+        if (button == null) {
+            return "Percentage of population vaccinated"
+        } else if (button == "Series_Complete_Pop_Pct") {
+            return "Percentage of population vaccinated"
+        } else if (button == "Series_Complete_18PlusPop_Pct") {
+            return "Percentage of 18+ vaccinated"
+        } else return "Percentage of 65+ vaccinated"
+    })
+    
     }
 
 
@@ -185,9 +197,10 @@ let drawMap = () => {
 d3.json(countyURL).then(
     (data, error) => {
         if (error) {
-            console.log(error);
         } else {
             countyData = topojson.feature(data, data.objects.counties).features
+            stateData = topojson.feature(data, data.objects.states).features
+            
         }
 
             d3.json("data/cdc_data.json").then(
@@ -203,9 +216,24 @@ d3.json(countyURL).then(
                             data.FIPS = Number(data.FIPS)
                             return data
                         })
+                        console.log(vacData)
                         drawMap()
                     }
                 }
             )
     }
 )
+
+// var center = turf.center(features);
+
+
+// function features(data) {
+//     for (let i = 0; i < data.length; i++) {
+//         const center = turf.center(data.geometry.coordinates[i]);
+//         return center
+        
+//     }
+// }
+
+// console.log(features(countyData[0]))
+
