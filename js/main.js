@@ -39,31 +39,22 @@ const tip = d3.tip()
 })
 g.call(tip)
 
-// Data credit
-// const credit = g.append("text")
-//     .attr("class", "credit")
-//     .attr("x", WIDTH - 230)
-//     .attr("y", HEIGHT + 20)
-//     .attr("font-size", "12px")
-//     .attr("color", "white")
-//     .text("Data: CDC | Updated: March 26, 2021")
-
-
 // Create legend 
 const LegendArea = d3.select("#legend").append("svg")
 .attr("width", WIDTH)
 .attr("height", 50)
 
 let legendInner = LegendArea.append("g")
-.attr("transform", `translate(${WIDTH * 0.19}, 20)`)
+    .attr("class", "legend")
+    .attr("transform", `translate(${WIDTH * 0.19}, 20)`)
 
 legendInner.append("text")
-.attr("class", "legend-header")
-.attr("x", 250)
-.attr("y", -5)
-.attr("text-anchor", "middle")
-.attr("font-size", "17px")
-.text("Percentage of population vaccinated")
+    .attr("class", "legend-header")
+    .attr("x", 250)
+    .attr("y", -7)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "17px")
+    .text("Percentage of total population vaccinated")
 
 increments.forEach((increment, i) => {
     const legendRow = legendInner.append("g")
@@ -100,6 +91,16 @@ increments.forEach((increment, i) => {
         .attr("height", "14px")
         .attr("width", "1.5px")
 })
+
+// Data credit
+const credit = g.append("text")
+    .attr("class", "credit")
+    .attr("x", WIDTH - 690)
+    .attr("y", HEIGHT + 20)
+    .attr("font-size", "12px")
+    .attr("opacity", "0.5")
+    .attr("font-style", "italic")
+    .text("Data: CDC | Note: Data for Texas, New Mexico, and Hawaii is missing.")
     
 // Update button based on whether it is selected
 $(".button").on('click', function() {
@@ -180,15 +181,16 @@ let drawMap = () => {
         })
 
 
-    $(".legend-header").text(function() {
-        if (button == null) {
-            return "Percentage of population vaccinated"
-        } else if (button == "Series_Complete_Pop_Pct") {
-            return "Percentage of population vaccinated"
-        } else if (button == "Series_Complete_18PlusPop_Pct") {
-            return "Percentage of 18+ vaccinated"
-        } else return "Percentage of 65+ vaccinated"
-    })
+        // Change legend header when data updates
+        $(".legend-header").text(function() {
+            if (button == null) {
+                return "Percentage of total population vaccinated"
+            } else if (button == "Series_Complete_Pop_Pct") {
+                return "Percentage of total population vaccinated"
+            } else if (button == "Series_Complete_18PlusPop_Pct") {
+                return "Percentage of 18+ vaccinated"
+            } else return "Percentage of 65+ vaccinated"
+        })
     
     }
 
@@ -224,16 +226,4 @@ d3.json(countyURL).then(
     }
 )
 
-// var center = turf.center(features);
-
-
-// function features(data) {
-//     for (let i = 0; i < data.length; i++) {
-//         const center = turf.center(data.geometry.coordinates[i]);
-//         return center
-        
-//     }
-// }
-
-// console.log(features(countyData[0]))
 
