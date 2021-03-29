@@ -197,7 +197,7 @@ d3.json(countyURL).then(
             // console.log(countyData);
         }
 
-            d3.json("data/cdc.json").then(
+            d3.json("data/cdc_data.json").then(
                 (data, error) => {
                     if (error) {
                         console.log(error);
