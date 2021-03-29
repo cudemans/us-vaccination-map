@@ -93,6 +93,7 @@ increments.forEach((increment, i) => {
 })
 
 // Data credit
+
 const credit = g.append("text")
     .attr("class", "credit")
     .attr("x", WIDTH - 690)
