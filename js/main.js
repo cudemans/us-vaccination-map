@@ -4,9 +4,8 @@ const MARGINS = {TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10};
 const HEIGHT = 640 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
-// Data
+// Get geodata
 const countyURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json'
-// const vacURL = fetch('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data').then((resp) => resp.json())
 
 // set up global variables
 let countyData
@@ -14,7 +13,6 @@ let vacData
 let i = 0
 let button
 let percentage
-
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
@@ -101,8 +99,6 @@ increments.forEach((increment, i) => {
         .attr("width", "1.5px")
 })
 
-
-
 // Update button based on whether it is selected
 $(".button").on('click', function() {
     var thisBtn = $(this)
@@ -116,7 +112,6 @@ $(".button").on("click", function() {
      // Update map based on new data
      drawMap()
 })
-
 
 
 // Draw map
@@ -186,7 +181,6 @@ let drawMap = () => {
     }
 
 
-
 // Read in and transform data, call the drawMap function
 d3.json(countyURL).then(
     (data, error) => {
@@ -194,7 +188,6 @@ d3.json(countyURL).then(
             console.log(error);
         } else {
             countyData = topojson.feature(data, data.objects.counties).features
-            // console.log(countyData);
         }
 
             d3.json("data/cdc_data.json").then(
@@ -210,8 +203,6 @@ d3.json(countyURL).then(
                             data.FIPS = Number(data.FIPS)
                             return data
                         })
-                        
-                        console.log(vacData)
                         drawMap()
                     }
                 }
