@@ -1,6 +1,8 @@
 
+// MAP - STATE VACCINATION PERCENTAGE
+
 // Set up canvas
-const MARGINS = {TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10};
+const MARGINS = { TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10 };
 const HEIGHT = 640 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
 
@@ -12,6 +14,8 @@ let i = 0
 let button
 let percentage
 let usData
+let x
+let y
 
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
@@ -21,7 +25,7 @@ const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d
 // Create SVG
 const svg = d3.select("#map-area").append("svg")
     .attr("height", HEIGHT + MARGINS.TOP + MARGINS.BOTTOM)
-    .attr("width", WIDTH + MARGINS.LEFT - MARGINS.RIGHT)
+    .attr("width", WIDTH + MARGINS.LEFT + MARGINS.RIGHT)
 
 
 const g = svg.append("g")
@@ -241,18 +245,63 @@ d3.json("data/counties.json").then(
 // })
 // g.call(tip)
 
+// BAR CHART - VACCINATIONS PER DAY
+
+const CHART_MARGINS = { TOP: 60, BOTTOM: 40, LEFT: 30, RIGHT: 10 };
+const CHART_HEIGHT = 400 - CHART_MARGINS.TOP - CHART_MARGINS.BOTTOM
+const CHART_WIDTH = 700 - CHART_MARGINS.LEFT - CHART_MARGINS.RIGHT
 
 
-const chart =d3.select("#chart-area").append("svg")
-    .attr("height", HEIGHT - 200)
-    .attr("width", WIDTH)
 
-const gChart = svg.append('g')
-    .attr("transform", `translate(${MARGINS.TOP}, ${MARGINS.LEFT})`)
+const chart = d3.select("#chart-area").append("svg")
+    .attr("height", CHART_HEIGHT  + CHART_MARGINS.TOP + CHART_MARGINS.BOTTOM)
+    .attr("width", CHART_WIDTH + CHART_MARGINS.LEFT + CHART_MARGINS.RIGHT)
+
+const gChart = chart.append('g')
+    .attr("transform", `translate(${CHART_MARGINS.LEFT}, ${CHART_MARGINS.TOP})`)
+
+// Tooltip
+
+let formatTime = d3.timeFormat("%B %d");
+let numberFormatter = d3.format(".2s")
+
+const chartTip = d3.tip()
+    .attr("class", "chart-tip")
+    .html(d => {
+        let chartText = `<strong><span style="font-family: 'Lato' font-size: 12px">${formatTime(d.Day)}</strong></span><br>`
+        chartText += `<span style="font-family: 'Lato' font-size: 11px">Vaccinations: ${numberFormatter(d.new_vaccinations_smoothed)}</span><br>`
+        return chartText
+    })
+gChart.call(chartTip)
+
+const chartTitle = chart.append("text")
+    .attr("class", "title-text")
+    .attr("x", 15)
+    .attr("y", 20)
+    .text("New doses per day")
+
+const chartSubtitle = chart.append("text")
+.attr("x", 15)
+.attr("y", 42)
+.attr("opacity", "0.6")
+.text("Rollout has accelerated since late February")
 
 
 let drawChart = () => {
 
+    const rects = gChart.selectAll("rect")
+        .data(usData)
+
+    rects.enter().append("rect")
+        .attr("x", d => x(d.Day))
+        .attr("y", d => y(d.new_vaccinations_smoothed))
+        .attr("width", "5px")
+        .attr("height", d => CHART_HEIGHT - y(d.new_vaccinations_smoothed))
+        .attr("fill", "#99d1b3")
+        // .transition(tChart)
+        .on("mouseover", chartTip.show)
+        .on("mouseout", chartTip.hide)
+    
 }
 
 d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
@@ -263,9 +312,36 @@ d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
             usData = data.filter(d => d.Entity === "United States")
             usData.forEach(d => {
                 d.new_vaccinations_smoothed = Number(d.new_vaccinations_smoothed)
+                let parseTime = d3.timeParse("%Y-%m-%d")
+                d.Day = parseTime(d.Day)
             });
             console.log(usData)
         }
+
+    x = d3.scaleTime()
+        .domain([new Date(2020, 11, 21), new Date(2021, 2, 29)])
+        .range([0, CHART_WIDTH])
+    
+    y = d3.scaleLinear()
+        .domain([0, d3.max(usData, d => d.new_vaccinations_smoothed)])
+        .range([CHART_HEIGHT, 0])
+
+    const xAxis = d3.axisBottom(x)
+        .ticks(5)
+        gChart.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0, ${CHART_HEIGHT})`)
+            .call(xAxis)
+        
+    const yAxis = d3.axisLeft(y)
+    .ticks(3)
+    .tickFormat(d3.format(".1s"))
+        gChart.append("g")
+            .attr("class", "y-axis")
+            .call(yAxis)
+            .select(".domain").remove()
+        
+   
         drawChart()
     }
 )

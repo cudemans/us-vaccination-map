@@ -24,6 +24,8 @@ text {
 
 .container {
   margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 .head {
@@ -94,6 +96,7 @@ text {
   transition: border 100;
   margin-top: 20px;
   margin-bottom: -15px;
+  cursor: pointer;
 }
 
 .clicked {
@@ -109,6 +112,7 @@ text {
 
 #chart-area {
   align-items: center;
+  margin-top: 10px;
 }
 
 .shaded {
@@ -151,4 +155,24 @@ text {
   letter-spacing: 0.5px;
   font-family: "Lato";
   font-weight: 300;
+}
+
+.chartTip {
+  background-color: rgb(82, 79, 79);
+  opacity: 1;
+  font-family: "Lato";
+}
+
+.x-axis {
+  opacity: 0.6;
+}
+
+.y-axis {
+  opacity: 0.6;
+}
+
+.title-text {
+  font-family: "Lato";
+  font-size: 18px;
+  font-weight: 600;
 }
