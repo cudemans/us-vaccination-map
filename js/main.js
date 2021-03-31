@@ -16,6 +16,7 @@ let percentage
 let usData
 let x
 let y
+let usTotal
 
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
@@ -248,7 +249,7 @@ d3.json("data/counties.json").then(
 // BAR CHART - VACCINATIONS PER DAY
 
 const CHART_MARGINS = { TOP: 60, BOTTOM: 40, LEFT: 30, RIGHT: 10 };
-const CHART_HEIGHT = 400 - CHART_MARGINS.TOP - CHART_MARGINS.BOTTOM
+const CHART_HEIGHT = 350 - CHART_MARGINS.TOP - CHART_MARGINS.BOTTOM
 const CHART_WIDTH = 700 - CHART_MARGINS.LEFT - CHART_MARGINS.RIGHT
 
 
@@ -263,10 +264,10 @@ const gChart = chart.append('g')
 // Tooltip
 
 let formatTime = d3.timeFormat("%B %d");
-let numberFormatter = d3.format(".2s")
+let numberFormatter = d3.format(",.2r")
 
 const chartTip = d3.tip()
-    .attr("class", "chart-tip")
+    .attr("class", "d3-tip")
     .html(d => {
         let chartText = `<strong><span style="font-family: 'Lato' font-size: 12px">${formatTime(d.Day)}</strong></span><br>`
         chartText += `<span style="font-family: 'Lato' font-size: 11px">Vaccinations: ${numberFormatter(d.new_vaccinations_smoothed)}</span><br>`
@@ -304,11 +305,13 @@ let drawChart = () => {
     
 }
 
+
 d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
     (data, error) => {
         if (error) {
             console.log(error)
         } else {
+            
             usData = data.filter(d => d.Entity === "United States")
             usData.forEach(d => {
                 d.new_vaccinations_smoothed = Number(d.new_vaccinations_smoothed)
@@ -345,3 +348,21 @@ d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
         drawChart()
     }
 )
+
+
+d3.json("data/total.json").then((data, error) => {
+    if (error) {
+        console.log(error)
+    } else {
+        let totalData = data['vaccination_data']
+        
+        delete totalData.runid
+
+        usTotal = totalData.filter(d => {
+            return d.LongName === "United States"
+        })
+
+        console.log(usTotal)
+    }
+})
+

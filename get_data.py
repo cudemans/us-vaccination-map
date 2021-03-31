@@ -1,8 +1,12 @@
 import requests
 import json
+import time
+
+timestr = time.strftime("%Y%m%d")
+
 
 url_counties = "https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data"
-url_country "https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data"
+url_country = "https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data"
 
 response = requests.get(url_counties)
 data = response.json()
@@ -14,5 +18,5 @@ with open("data/cdc_data.json", "w") as outfile:
 country_response = requests.get(url_country)
 country_data = country_response.json()
 
-with open("data/country_data/json", "w") as country_outfile:
+with open(f"data/{timestr}_country_data.json", "w") as country_outfile:
     json.dump(country_data, country_outfile)
