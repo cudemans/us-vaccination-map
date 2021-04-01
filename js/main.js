@@ -110,7 +110,6 @@ $(".button").on("click", function() {
      drawMap()
 })
 
-
 // Draw map
 let drawMap = () => {
 
@@ -192,14 +191,6 @@ g.call(tip)
                 return "Percentage of 18+ vaccinated"
             } else return "Percentage of 65+ vaccinated"
         })
-
-    // Zoom functionality
-    // const zoom = d3.zoom()
-    //     .scaleExtent([1, 8])
-    //     .extent([[0, 0], [WIDTH, HEIGHT]])
-    //     .on("zoom", () => g.attr("transform", d3.event.transform));
-    
-    // svg.call(zoom);
     
     }
 
@@ -264,7 +255,7 @@ const gChart = chart.append('g')
 // Tooltip
 
 let formatTime = d3.timeFormat("%B %d");
-let numberFormatter = d3.format(",.2r")
+let numberFormatter = d3.format(",.4r")
 
 const chartTip = d3.tip()
     .attr("class", "d3-tip")
@@ -306,7 +297,7 @@ let drawChart = () => {
 }
 
 
-d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
+d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then(
     (data, error) => {
         if (error) {
             console.log(error)
@@ -321,8 +312,11 @@ d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
             console.log(usData)
         }
 
+
+        // 2020, 11, 21
+        // 2021, 2, 29
     x = d3.scaleTime()
-        .domain([new Date(2020, 11, 21), new Date(2021, 2, 29)])
+        .domain([new Date(2020, 11, 21), new Date(d3.max(data, d => d.Day))])
         .range([0, CHART_WIDTH])
     
     y = d3.scaleLinear()
@@ -350,19 +344,32 @@ d3.csv("data/daily-covid-19-vaccination-doses.csv").then(
 )
 
 
-d3.json("data/total.json").then((data, error) => {
+// d3.json("data/total.json").then((data, error) => {
+//     if (error) {
+//         console.log(error)
+//     } else {
+//         let totalData = data['vaccination_data']
+        
+//         delete totalData.runid
+
+//         usTotal = totalData.filter(d => {
+//             return d.LongName === "United States"
+//         })
+
+//         console.log(usTotal)
+//     }
+// })
+
+let us
+
+d3.csv("data/owid-covid-data.csv").then((data, error) => {
     if (error) {
         console.log(error)
     } else {
-        let totalData = data['vaccination_data']
-        
-        delete totalData.runid
 
-        usTotal = totalData.filter(d => {
-            return d.LongName === "United States"
-        })
-
-        console.log(usTotal)
+    us = data.filter(d => d.location === "United States")
+        console.log(us)
     }
+
 })
 
