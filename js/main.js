@@ -1,7 +1,7 @@
 
 // MAP - STATE VACCINATION PERCENTAGE
 
-// Set up canvas
+// Set up margins
 const MARGINS = { TOP: 0, BOTTOM: 40, LEFT: 10, RIGHT: 10 };
 const HEIGHT = 640 - MARGINS.TOP - MARGINS.BOTTOM
 const WIDTH = 1000 - MARGINS.LEFT - MARGINS.RIGHT
@@ -13,11 +13,6 @@ let vacData
 let i = 0
 let button
 let percentage
-let usData
-let x
-let y
-let usTotal
-
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
@@ -113,10 +108,17 @@ $(".button").on("click", function() {
 // Draw map
 let drawMap = () => {
 
+    let stateByFIPS = {};
+    vacData.forEach((d) => stateByFIPS[d.FIPS] = d.County );
+    console.log(stateByFIPS)
+
 // Tooltip
 const tip = d3.tip()
     .attr("class", "d3-tip")
-    .html(d => d)
+    .html(function(d){
+        // let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County: ${dog()}</strong></span>hehe<br>`
+        `<p>${countyData.filter((d) => d.id == stateByFIPS.keys)}</p>`
+    })
 g.call(tip)
 
     // add transiton
@@ -194,7 +196,6 @@ g.call(tip)
     
     }
 
-
 // Read in and transform data, call the drawMap function
 d3.json("data/counties.json").then(
     (data, error) => {
@@ -224,26 +225,21 @@ d3.json("data/counties.json").then(
                     }
                 }
             )
+
     }
 )
 
 
-// const tip = d3.tip()
-// .attr("class", "d3-tip")
-// .html(() => {
-//     let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County</strong></span><br>`
-//     text += `<p style="color: #6e6d6d; font-size: 12px; line-spacing:70%">Number of vaccinations</p>`
-//     return text
-// })
-// g.call(tip)
-
 // BAR CHART - VACCINATIONS PER DAY
 
 const CHART_MARGINS = { TOP: 60, BOTTOM: 40, LEFT: 30, RIGHT: 10 };
-const CHART_HEIGHT = 350 - CHART_MARGINS.TOP - CHART_MARGINS.BOTTOM
+const CHART_HEIGHT = 400 - CHART_MARGINS.TOP - CHART_MARGINS.BOTTOM
 const CHART_WIDTH = 700 - CHART_MARGINS.LEFT - CHART_MARGINS.RIGHT
 
-
+// Global variables
+let usComplete
+let x
+let y
 
 const chart = d3.select("#chart-area").append("svg")
     .attr("height", CHART_HEIGHT  + CHART_MARGINS.TOP + CHART_MARGINS.BOTTOM)
@@ -253,15 +249,14 @@ const gChart = chart.append('g')
     .attr("transform", `translate(${CHART_MARGINS.LEFT}, ${CHART_MARGINS.TOP})`)
 
 // Tooltip
-
 let formatTime = d3.timeFormat("%B %d");
 let numberFormatter = d3.format(",.4r")
 
 const chartTip = d3.tip()
     .attr("class", "d3-tip")
     .html(d => {
-        let chartText = `<strong><span style="font-family: 'Lato' font-size: 12px">${formatTime(d.Day)}</strong></span><br>`
-        chartText += `<span style="font-family: 'Lato' font-size: 11px">Vaccinations: ${numberFormatter(d.new_vaccinations_smoothed)}</span><br>`
+        let chartText = `<strong><span style="font-family: 'Lato' font-size: 12px">${formatTime(d.Date)}</strong></span><br>`
+        chartText += `<span style="font-family: 'Lato' font-size: 11px">Vaccinations: ${numberFormatter(d.Administered_Daily)}</span><br>`
         return chartText
     })
 gChart.call(chartTip)
@@ -282,45 +277,41 @@ const chartSubtitle = chart.append("text")
 let drawChart = () => {
 
     const rects = gChart.selectAll("rect")
-        .data(usData)
+        .data(usComplete)
 
     rects.enter().append("rect")
-        .attr("x", d => x(d.Day))
-        .attr("y", d => y(d.new_vaccinations_smoothed))
+        .attr("x", d => x(d.Date))
+        .attr("y", d => y(d.Administered_Daily))
         .attr("width", "5px")
-        .attr("height", d => CHART_HEIGHT - y(d.new_vaccinations_smoothed))
+        .attr("height", d => CHART_HEIGHT - y(d.Administered_Daily))
         .attr("fill", "#99d1b3")
         // .transition(tChart)
         .on("mouseover", chartTip.show)
         .on("mouseout", chartTip.hide)
-    
+
 }
 
+d3.json("data/us_historical.json").then((data, error) => {
+    if (error) {
+        console.log(error)
+    } else {
+        usComplete = data['vaccination_trends_data']
+        
+        delete usComplete.runid
 
-d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then(
-    (data, error) => {
-        if (error) {
-            console.log(error)
-        } else {
-            
-            usData = data.filter(d => d.Entity === "United States")
-            usData.forEach(d => {
-                d.new_vaccinations_smoothed = Number(d.new_vaccinations_smoothed)
-                let parseTime = d3.timeParse("%Y-%m-%d")
-                d.Day = parseTime(d.Day)
-            });
-            console.log(usData)
-        }
+        usComplete.map(data => {
+            let parseTime = d3.timeParse("%Y-%m-%d")
+            data.Date = parseTime(data.Date)
+            return data
+        })
+    }
 
-
-        // 2020, 11, 21
-        // 2021, 2, 29
     x = d3.scaleTime()
-        .domain([new Date(2020, 11, 21), new Date(d3.max(data, d => d.Day))])
+        .domain([new Date(d3.min(usComplete, d => d.Date)), new Date(d3.max(usComplete, d => d.Date))])
         .range([0, CHART_WIDTH])
     
     y = d3.scaleLinear()
-        .domain([0, d3.max(usData, d => d.new_vaccinations_smoothed)])
+        .domain([0, d3.max(usComplete, d => d.Administered_Daily)])
         .range([CHART_HEIGHT, 0])
 
     const xAxis = d3.axisBottom(x)
@@ -342,34 +333,3 @@ d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then(
         drawChart()
     }
 )
-
-
-// d3.json("data/total.json").then((data, error) => {
-//     if (error) {
-//         console.log(error)
-//     } else {
-//         let totalData = data['vaccination_data']
-        
-//         delete totalData.runid
-
-//         usTotal = totalData.filter(d => {
-//             return d.LongName === "United States"
-//         })
-
-//         console.log(usTotal)
-//     }
-// })
-
-let us
-
-d3.csv("data/owid-covid-data.csv").then((data, error) => {
-    if (error) {
-        console.log(error)
-    } else {
-
-    us = data.filter(d => d.location === "United States")
-        console.log(us)
-    }
-
-})
-

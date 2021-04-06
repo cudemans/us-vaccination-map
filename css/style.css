@@ -24,8 +24,8 @@ text {
 
 .container {
   margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
+  /* display: flex;
+  flex-direction: column; */
 }
 
 .head {
