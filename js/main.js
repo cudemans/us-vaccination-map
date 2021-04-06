@@ -13,6 +13,8 @@ let vacData
 let i = 0
 let button
 let percentage
+let formatDate = d3.timeFormat("%B %d, %Y");
+let parseDate = d3.timeParse("%Y-%m-%d")
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
@@ -220,6 +222,12 @@ d3.json("data/counties.json").then(
                     
                         })
                         console.log(vacData)
+
+                        const date =  parseDate(vacData[0].Date)
+                        document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
+
+                        
+                        
                         drawMap()
                        
                     }
