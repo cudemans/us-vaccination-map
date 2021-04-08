@@ -16,6 +16,7 @@ let percentage
 let formatDate = d3.timeFormat("%B %-d, %Y");
 let parseDate = d3.timeParse("%Y-%m-%d")
 
+
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
 const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
 
@@ -110,17 +111,18 @@ $(".button").on("click", function() {
 // Draw map
 let drawMap = () => {
 
-    let stateByFIPS = {};
-    vacData.forEach((d) => stateByFIPS[d.FIPS] = d.County );
-    console.log(stateByFIPS)
+
+let cloned = _.clone(vacData)
+let merged = _.merge(_.keyBy(cloned, 'FIPS'), _.keyBy(countyData, 'id'))
+let values = _.values(merged)
+console.log(values)
+
+
 
 // Tooltip
 const tip = d3.tip()
     .attr("class", "d3-tip")
-    .html(function(d){
-        // let text = `<strong><span style="color: black; font-size: 14px; line-spacing:70%">County: ${dog()}</strong></span>hehe<br>`
-        `<p>${countyData.filter((d) => d.id == stateByFIPS.keys)}</p>`
-    })
+    .html(d => d)
 g.call(tip)
 
     // add transiton
@@ -130,7 +132,8 @@ g.call(tip)
     // Add app
     //Bind data
     const paths = g.selectAll("path")
-        .data(countyData)
+        // replace values with countyData
+        .data(values)
 
     //Exit
     paths.exit().remove()
@@ -154,12 +157,12 @@ g.call(tip)
         .transition(t)
         .attr("fill", (item) => {
             let fips = item['id']
-            let county = vacData.find(d => {
-                return d['FIPS'] === fips
-            })
+            // let county = vacData.find(d => {
+            //     return d['FIPS'] === fips
+            // }) if wanting to put back replace items below with county
             if (button == null) {
-                percentage = county["Series_Complete_Pop_Pct"]
-            } else percentage = county[button]
+                percentage = item["Series_Complete_Pop_Pct"]
+            } else percentage = item[button]
             if (percentage == null) {
                 return "#cecfc8"
             } 
@@ -183,7 +186,6 @@ g.call(tip)
                 return "#1a9754"
             } else return "#008b41"
         })
-
 
         // Change legend header when data updates
         $(".legend-header").text(function() {
@@ -225,6 +227,8 @@ d3.json("data/counties.json").then(
                         // Set update date on webpage
                         const date =  parseDate(vacData[0].Date)
                         document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
+
+                        console.log(stateData)
 
                         drawMap()
                        
@@ -296,7 +300,7 @@ let drawChart = () => {
 
 }
 
-d3.json("data/us_historical.json").then((data, error) => {
+d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/_us_historical.json").then((data, error) => {
     if (error) {
         console.log(error)
     } else {
