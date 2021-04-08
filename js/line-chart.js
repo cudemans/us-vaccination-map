@@ -102,6 +102,9 @@ d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then((data, error) => {
 
     let filtered = nested.filter(function(d){ return  (d.key != "Africa" || d.key != "Asia") })
     
+    // nested.map(d => {
+
+    // })
 
     drawLine()
 

@@ -13,7 +13,7 @@ let vacData
 let i = 0
 let button
 let percentage
-let formatDate = d3.timeFormat("%B %d, %Y");
+let formatDate = d3.timeFormat("%B %-d, %Y");
 let parseDate = d3.timeParse("%Y-%m-%d")
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
@@ -207,7 +207,7 @@ d3.json("data/counties.json").then(
             stateData = topojson.feature(data, data.objects.states).features
         }
 
-            d3.json("data/cdc_data.json").then(
+            d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/cdc_data.json").then(
                 (data, error) => {
                     if (error) {
                         console.log(error);
@@ -221,19 +221,16 @@ d3.json("data/counties.json").then(
                             return data
                     
                         })
-                        console.log(vacData)
-
+                        
+                        // Set update date on webpage
                         const date =  parseDate(vacData[0].Date)
                         document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
 
-                        
-                        
                         drawMap()
                        
                     }
                 }
             )
-
     }
 )
 
