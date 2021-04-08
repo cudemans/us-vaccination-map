@@ -6,7 +6,7 @@ Written in D3.js, this visualization maps the US' vaccination program. It curren
 
 ## Upcoming features
 
-The map is currently feature-light, but I'll add more functionality when I can. Upcoming features include:
+The map is currently feature-light, but I'll add more functionality when I can.
 
 - Working tooltips
 - Zoom functionality
@@ -16,5 +16,7 @@ The map is currently feature-light, but I'll add more functionality when I can. 
 - Pull data from CDC API
 - Offset "no data" label
 - ~~Update information~~
+- State names
+- State borders
 
 **Caveat:** The visualization still needs to be annotated, and currently gives no indication how complete the data is. I'll be adding this in soon.
