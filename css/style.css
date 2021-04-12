@@ -177,3 +177,7 @@ text {
   font-size: 18px;
   font-weight: 600;
 }
+
+.y-axis line {
+  stroke: #e5e2e0;
+}

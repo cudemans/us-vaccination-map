@@ -118,12 +118,36 @@ let values = _.values(merged)
 console.log(values)
 
 
+let county2
+let percentage2
 
 // Tooltip
-const tip = d3.tip()
+let tip = d3.tip()
     .attr("class", "d3-tip")
-    .html(d => d)
+    .html(d => {
+        // county2 = vacData.find(d => {
+        //     return d['FIPS'] === countyData["id"]
+        //     }) 
+
+       
+        
+        let per = vacData.find(d => {
+            return d['FIPS'] == countyData['id']
+        })
+
+        console.log(per)
+       
+            
+        // percentage2 = county2["Series_Complete_Pop_Pct"]
+        // console.log(percentage2)
+
+        // let text = `<p>${percentage}</p>`
+        // return text
+
+        })
 g.call(tip)
+
+
 
     // add transiton
     const t = d3.transition()
@@ -133,7 +157,7 @@ g.call(tip)
     //Bind data
     const paths = g.selectAll("path")
         // replace values with countyData
-        .data(values)
+        .data(countyData)
 
     //Exit
     paths.exit().remove()
@@ -157,12 +181,12 @@ g.call(tip)
         .transition(t)
         .attr("fill", (item) => {
             let fips = item['id']
-            // let county = vacData.find(d => {
-            //     return d['FIPS'] === fips
-            // }) if wanting to put back replace items below with county
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            }) 
             if (button == null) {
-                percentage = item["Series_Complete_Pop_Pct"]
-            } else percentage = item[button]
+                percentage = county["Series_Complete_Pop_Pct"]
+            } else percentage = county[button]
             if (percentage == null) {
                 return "#cecfc8"
             } 
@@ -231,6 +255,10 @@ d3.json("data/counties.json").then(
                         console.log(stateData)
 
                         drawMap()
+
+
+
+
                        
                     }
                 }
@@ -249,6 +277,8 @@ const CHART_WIDTH = 700 - CHART_MARGINS.LEFT - CHART_MARGINS.RIGHT
 let usComplete
 let x
 let y
+let avNest
+let avLines
 
 const chart = d3.select("#chart-area").append("svg")
     .attr("height", CHART_HEIGHT  + CHART_MARGINS.TOP + CHART_MARGINS.BOTTOM)
@@ -282,7 +312,6 @@ const chartSubtitle = chart.append("text")
 .attr("opacity", "0.6")
 .text("Rollout has accelerated since late February")
 
-
 let drawChart = () => {
 
     const rects = gChart.selectAll("rect")
@@ -297,6 +326,16 @@ let drawChart = () => {
         // .transition(tChart)
         .on("mouseover", chartTip.show)
         .on("mouseout", chartTip.hide)
+
+    const avLineChart =  gChart.selectAll("path")
+        .data(avNest)
+    
+        avLineChart.enter().append("path")
+            .attr("d",  d => {
+                return avLines(d.value)
+            })
+            .attr("fill", "none")
+            .attr("stroke", "black")
 
 }
 
@@ -313,7 +352,23 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
             data.Date = parseTime(data.Date)
             return data
         })
+
+
+
+    console.log(usComplete)
+
     }
+
+    avLines = d3.line()
+        .x(d => d.Date)
+        .y(d => d.Administered_7_Day_Rolling_Average)
+    
+
+    avNest = d3.nest()
+        .key(d => d.Date)
+        .rollup(v => 
+            {return d3.mean(v, d => d.Administered_7_Day_Rolling_Average)})
+        .entries(usComplete)
 
     x = d3.scaleTime()
         .domain([new Date(d3.min(usComplete, d => d.Date)), new Date(d3.max(usComplete, d => d.Date))])
@@ -333,6 +388,7 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
     const yAxis = d3.axisLeft(y)
     .ticks(3)
     .tickFormat(d3.format(".1s"))
+    .tickSize(-CHART_WIDTH)
         gChart.append("g")
             .attr("class", "y-axis")
             .call(yAxis)
