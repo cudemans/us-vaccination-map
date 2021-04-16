@@ -15,10 +15,13 @@ let button
 let percentage
 let formatDate = d3.timeFormat("%B %-d, %Y");
 let parseDate = d3.timeParse("%Y-%m-%d")
+let totData
+let countyName
+let plusEighteen
 
 
 const increments = ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100', "No data"]
-const colors = [ "#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
+const colors = ["#e6f3ec", "#cce8d9", "#b3dcc6", "#99d1b3", '#80c5a0', "#66b98d", "#4dae7a", "#33a267", "#1a9754", "#008b41", "#ffffff", "#cecfc8", "#ffffff"]
 
 
 // Create SVG
@@ -33,8 +36,8 @@ const g = svg.append("g")
 
 // Create legend 
 const LegendArea = d3.select("#legend").append("svg")
-.attr("width", WIDTH)
-.attr("height", 50)
+    .attr("width", WIDTH)
+    .attr("height", 50)
 
 let legendInner = LegendArea.append("g")
     .attr("class", "legend")
@@ -56,10 +59,10 @@ increments.forEach((increment, i) => {
     legendRow.append("rect")
         .attr("height", 10)
         .attr("width", 50)
-        
-        .attr("fill", function() {
+
+        .attr("fill", function () {
             while (i < colors.length) {
-                return colors[i] 
+                return colors[i]
                 i++
             }
         })
@@ -71,10 +74,10 @@ increments.forEach((increment, i) => {
         .attr("text-anchor", "middle")
         .attr("font-size", "12px")
         .attr("font-weight", 100)
-        .text(function() {
+        .text(function () {
             while (i < increments.length) {
                 return increments[i]
-                i ++
+                i++
             }
         })
 
@@ -87,71 +90,38 @@ increments.forEach((increment, i) => {
 // Data credit
 const credit = g.append("text")
     .attr("class", "credit")
-    .attr("x", WIDTH - 400)
+    .attr("x", WIDTH - 300)
     .attr("y", HEIGHT + 20)
     .attr("font-size", "12px")
     .attr("opacity", "0.5")
     .attr("font-style", "italic")
-    .text("Data: CDC | Note: Data for Texas, New Mexico, and Hawaii is missing.")
-    
+    .text("Data: CDC | Note: Data for Texas and Hawaii is missing.")
+
 // Update button based on whether it is selected
-$(".button").on('click', function() {
+$(".button").on('click', function () {
     var thisBtn = $(this)
     thisBtn.addClass('clicked').siblings().removeClass("clicked")
     return thisBtn
- })
+})
 
 // Select data from button value
-$(".button").on("click", function() {
-     button = $(this).val()
-     // Update map based on new data
-     drawMap()
+$(".button").on("click", function () {
+    button = $(this).val()
+    // Update map based on new data
+    drawMap()
 })
 
 // Draw map
 let drawMap = () => {
 
-
-let cloned = _.clone(vacData)
-let merged = _.merge(_.keyBy(cloned, 'FIPS'), _.keyBy(countyData, 'id'))
-let values = _.values(merged)
-console.log(values)
-
-
-let county2
-let percentage2
-
-// Tooltip
-let tip = d3.tip()
-    .attr("class", "d3-tip")
-    .html(d => {
-        // county2 = vacData.find(d => {
-        //     return d['FIPS'] === countyData["id"]
-        //     }) 
-
-       
-        
-        let per = vacData.find(d => {
-            return d['FIPS'] == countyData['id']
-        })
-
-        console.log(per)
-       
-            
-        // percentage2 = county2["Series_Complete_Pop_Pct"]
-        // console.log(percentage2)
-
-        // let text = `<p>${percentage}</p>`
-        // return text
-
-        })
-g.call(tip)
-
+    // let cloned = _.clone(vacData)
+    // let merged = _.merge(_.keyBy(cloned, 'FIPS'), _.keyBy(countyData, 'id'))
+    // let values = _.values(merged)
 
 
     // add transiton
     const t = d3.transition()
-		.duration(50)
+        .duration(50)
 
     // Add app
     //Bind data
@@ -161,7 +131,7 @@ g.call(tip)
 
     //Exit
     paths.exit().remove()
-    
+
     // Merge
     paths.enter()
         .append("path")
@@ -169,11 +139,11 @@ g.call(tip)
         .attr("class", "county")
         .attr("stroke", "#ffffff")
         .attr("stroke-width", "0.5px")
-        .on("mouseover", function(d) {
+        .on("mouseover", function (d) {
             d3.select(this).classed("shaded", true)
-            tip.show()    
+            tip.show()
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function (d) {
             d3.select(this).classed("shaded", false)
             tip.hide()
         })
@@ -183,18 +153,18 @@ g.call(tip)
             let fips = item['id']
             let county = vacData.find(d => {
                 return d['FIPS'] === fips
-            }) 
+            })
             if (button == null) {
                 percentage = county["Series_Complete_Pop_Pct"]
             } else percentage = county[button]
             if (percentage == null) {
                 return "#cecfc8"
-            } 
+            }
             else if (percentage <= 10) {
                 return "#e6f3ec"
             } else if (percentage <= 20) {
                 return "#cce8d9"
-            } else if (percentage <= 30){
+            } else if (percentage <= 30) {
                 return "#b3dcc6"
             } else if (percentage <= 40) {
                 return "#99d1b3"
@@ -210,19 +180,88 @@ g.call(tip)
                 return "#1a9754"
             } else return "#008b41"
         })
-
-        // Change legend header when data updates
-        $(".legend-header").text(function() {
-            if (button == null) {
-                return "Percentage of total population vaccinated"
-            } else if (button == "Series_Complete_Pop_Pct") {
-                return "Percentage of total population vaccinated"
-            } else if (button == "Series_Complete_18PlusPop_Pct") {
-                return "Percentage of 18+ vaccinated"
-            } else return "Percentage of 65+ vaccinated"
+        .attr("tot_pop", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let per = county["Series_Complete_Pop_Pct"]
+            return per
         })
-    
-    }
+        .attr("eighteen", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let eighteen = county["Series_Complete_18PlusPop_Pct"]
+            return eighteen
+        })
+        .attr("sixtyfive", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let sixtyfive = county["Series_Complete_65PlusPop_Pct"]
+            return sixtyfive
+        })
+        .attr("county", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let countyName = county["County"]
+            return countyName
+        })
+        .attr("state", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let state = county["StateName"]
+            return state
+        })
+        .attr("completeness", item => {
+            let fips = item['id']
+            let county = vacData.find(d => {
+                return d['FIPS'] === fips
+            })
+            let state = county["StateName"]
+            return state
+        })
+
+        let tip = d3.tip()
+        .attr("class", "d3-tip")
+        .html(function() {
+            
+            let totPer = document.querySelectorAll(".county")
+            $(totPer).on("mouseover", function() {
+                 totData =  $(this).attr("tot_pop")
+                 countyName = $(this).attr("county")
+                 stateName = $(this).attr("state")
+                 plusSixtyfive = $(this).attr("sixtyfive")
+                 plusEighteen = $(this).attr("eighteen")})
+                 
+            if (totData != undefined) {
+                return `<p id="geo-name"><strong>${countyName}, ${stateName}</strong></p><p class="figures">Total vaccinated: &nbsp;&nbsp;&nbsp;<strong>${totData}%</strong></p><p class="figures">18+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>${plusEighteen}%</strong></p><p class="figures">65+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>${plusSixtyfive}%</strong></p>`
+            } else {
+                return `<p id="geo-name"><strong>${countyName}, ${stateName}</strong></p><p class="figures">Total vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p><p class="figures">18+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p><p class="figures">65+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p>`
+            } 
+        })
+    g.call(tip)
+
+
+    // Change legend header when data updates
+    $(".legend-header").text(function () {
+        if (button == null) {
+            return "Percentage of total population vaccinated"
+        } else if (button == "Series_Complete_Pop_Pct") {
+            return "Percentage of total population vaccinated"
+        } else if (button == "Series_Complete_18PlusPop_Pct") {
+            return "Percentage of 18+ vaccinated"
+        } else return "Percentage of 65+ vaccinated"
+    })
+
+}
 
 // Read in and transform data, call the drawMap function
 d3.json("data/counties.json").then(
@@ -233,36 +272,31 @@ d3.json("data/counties.json").then(
             stateData = topojson.feature(data, data.objects.states).features
         }
 
-            d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/cdc_data.json").then(
-                (data, error) => {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        vacData = data['vaccination_county_condensed_data']
-                    
-                        delete vacData.runid
+        d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/cdc_data.json").then(
+            (data, error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    vacData = data['vaccination_county_condensed_data']
 
-                        vacData = vacData.map(data => {
-                            data.FIPS = Number(data.FIPS)
-                            return data
-                    
-                        })
-                        
-                        // Set update date on webpage
-                        const date =  parseDate(vacData[0].Date)
-                        document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
+                    delete vacData.runid
 
-                        console.log(stateData)
+                    vacData = vacData.map(data => {
+                        data.FIPS = Number(data.FIPS)
+                        return data
 
-                        drawMap()
+                    })
 
+                    // Set update date on webpage
+                    const date = parseDate(vacData[0].Date)
+                    document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
+                    console.log(vacData)
 
+                    drawMap()
 
-
-                       
-                    }
                 }
-            )
+            }
+        )
     }
 )
 
@@ -281,7 +315,7 @@ let avNest
 let avLines
 
 const chart = d3.select("#chart-area").append("svg")
-    .attr("height", CHART_HEIGHT  + CHART_MARGINS.TOP + CHART_MARGINS.BOTTOM)
+    .attr("height", CHART_HEIGHT + CHART_MARGINS.TOP + CHART_MARGINS.BOTTOM)
     .attr("width", CHART_WIDTH + CHART_MARGINS.LEFT + CHART_MARGINS.RIGHT)
 
 const gChart = chart.append('g')
@@ -294,8 +328,8 @@ let numberFormatter = d3.format(",.4r")
 const chartTip = d3.tip()
     .attr("class", "d3-tip")
     .html(d => {
-        let chartText = `<strong><span style="font-family: 'Lato' font-size: 12px">${formatTime(d.Date)}</strong></span><br>`
-        chartText += `<span style="font-family: 'Lato' font-size: 11px">Vaccinations: ${numberFormatter(d.Administered_Daily)}</span><br>`
+        let chartText = `<strong><p id="date">${formatTime(d.Date)}</strong></p><br>`
+        chartText += `<p id="number">Vaccinations: ${numberFormatter(d.Administered_Daily)}</p>`
         return chartText
     })
 gChart.call(chartTip)
@@ -307,10 +341,10 @@ const chartTitle = chart.append("text")
     .text("New doses per day")
 
 const chartSubtitle = chart.append("text")
-.attr("x", 15)
-.attr("y", 42)
-.attr("opacity", "0.6")
-.text("Rollout has accelerated since late February")
+    .attr("x", 15)
+    .attr("y", 42)
+    .attr("opacity", "0.6")
+    .text("Rollout has accelerated since late February")
 
 let drawChart = () => {
 
@@ -327,15 +361,16 @@ let drawChart = () => {
         .on("mouseover", chartTip.show)
         .on("mouseout", chartTip.hide)
 
-    const avLineChart =  gChart.selectAll("path")
-        .data(avNest)
-    
-        avLineChart.enter().append("path")
-            .attr("d",  d => {
-                return avLines(d.value)
-            })
-            .attr("fill", "none")
-            .attr("stroke", "black")
+    // const avLineChart =  gChart.selectAll("path")
+    //     .data(avNest)
+
+    // avLineChart.enter().append("path")
+    //     .attr("d",  avLines(avNest))
+    //     .attr("fill", "none")
+    //     .attr("stroke", "black")
+
+    // const avLineChart = gChart.append("path")
+    //     .attr("d", avLines(avNest.value))
 
 }
 
@@ -344,7 +379,7 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
         console.log(error)
     } else {
         usComplete = data['vaccination_trends_data']
-        
+
         delete usComplete.runid
 
         usComplete.map(data => {
@@ -353,48 +388,51 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
             return data
         })
 
-
-
-    console.log(usComplete)
+        console.log(usComplete)
 
     }
 
     avLines = d3.line()
         .x(d => d.Date)
         .y(d => d.Administered_7_Day_Rolling_Average)
-    
+
 
     avNest = d3.nest()
         .key(d => d.Date)
-        .rollup(v => 
-            {return d3.mean(v, d => d.Administered_7_Day_Rolling_Average)})
+        .rollup(v => { return d3.mean(v, d => d.Administered_7_Day_Rolling_Average) })
         .entries(usComplete)
+
+    avNest.map(d => {
+        d.key = new Date(d.key)
+    })
+
+    console.log(avNest)
 
     x = d3.scaleTime()
         .domain([new Date(d3.min(usComplete, d => d.Date)), new Date(d3.max(usComplete, d => d.Date))])
         .range([0, CHART_WIDTH])
-    
+
     y = d3.scaleLinear()
         .domain([0, d3.max(usComplete, d => d.Administered_Daily)])
         .range([CHART_HEIGHT, 0])
 
     const xAxis = d3.axisBottom(x)
         .ticks(5)
-        gChart.append("g")
-            .attr("class", "x-axis")
-            .attr("transform", `translate(0, ${CHART_HEIGHT})`)
-            .call(xAxis)
-        
+    gChart.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0, ${CHART_HEIGHT})`)
+        .call(xAxis)
+
     const yAxis = d3.axisLeft(y)
-    .ticks(3)
-    .tickFormat(d3.format(".1s"))
-    .tickSize(-CHART_WIDTH)
-        gChart.append("g")
-            .attr("class", "y-axis")
-            .call(yAxis)
-            .select(".domain").remove()
-        
-   
-        drawChart()
-    }
+        .ticks(3)
+        .tickFormat(d3.format(".1s"))
+        .tickSize(-CHART_WIDTH)
+    gChart.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis)
+        .select(".domain").remove()
+
+
+    drawChart()
+}
 )

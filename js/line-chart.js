@@ -1,4 +1,4 @@
-const MARGINS_LINE = { TOP: 0, BOTTOM: 40, LEFT: 50, RIGHT: 250 };
+const MARGINS_LINE = { TOP: 10, BOTTOM: 40, LEFT: 50, RIGHT: 250 };
 const HEIGHT_LINE = 500 - MARGINS_LINE.TOP - MARGINS_LINE.BOTTOM
 const WIDTH_LINE = 900 - MARGINS_LINE.LEFT - MARGINS_LINE.RIGHT
 
@@ -8,6 +8,7 @@ let lineY
 let line
 let nested
 let nestFilter
+let filtered
 
 const svgLine = d3.select("#line-chart").append("svg")
     .attr("height", HEIGHT_LINE + MARGINS_LINE.TOP + MARGINS_LINE.BOTTOM)
@@ -20,7 +21,7 @@ const gLine = svgLine.append("g")
 let drawLine = () => {
 
     const lines = gLine.selectAll("path")
-        .data(nested)
+        .data(filtered)
 
     lines.enter().append("path")
         .attr("class", ".path")
@@ -37,12 +38,12 @@ let drawLine = () => {
         })
 
     const countryLabels = gLine.selectAll(".country-labels")
-        .data(nested)
+        .data(filtered)
 
     countryLabels.enter().append("text")
         .attr("class", "country-labels")
         .attr("x", WIDTH_LINE - 50)
-        .attr("y", 0)
+        .attr("y", d => line(d.values[d.values.length -1]))
         
         .text(d => d.key)
 
@@ -60,11 +61,6 @@ d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then((data, error) => {
             data.Day = parseTimeLine(data.Day)
             return data
         })
-
-        let filtered = formattedData.filter(d => {
-            return d.Entity != "Africa" || d.Entity != "Afghanistan"
-        })
-       console.log(filtered)
     }
 
     // .domain([new Date(d3.min(formattedData, d => d.Day)), new Date(d3.max(formattedData, d => d.Day))])
@@ -73,7 +69,7 @@ d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then((data, error) => {
         .range([0, WIDTH_LINE])
     
     lineY = d3.scaleLinear()
-        .domain([0, d3.max(formattedData, d => d.new_vaccinations_smoothed)])
+        .domain([0, 5000000])
         .range([HEIGHT_LINE, 0])
 
     const xAxisLine = d3.axisBottom(lineX)
@@ -100,11 +96,16 @@ d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then((data, error) => {
         .key(d => d.Entity)
         .entries(formattedData)
 
-    let filtered = nested.filter(function(d){ return  (d.key != "Africa" || d.key != "Asia") })
-    
-    // nested.map(d => {
-
-    // })
+    filtered = nested
+        .filter(d => d.key != "Africa")
+        .filter(d => d.key != "Asia")
+        .filter(d => d.key != "North America")
+        .filter(d => d.key != "South America")
+        .filter(d => d.key != "Europe")
+        .filter(d => d.key != "World")
+        
+        
+    console.log(filtered)
 
     drawLine()
 

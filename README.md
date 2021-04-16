@@ -8,15 +8,13 @@ Written in D3.js, this visualization maps the US' vaccination program. It curren
 
 The map is currently feature-light, but I'll add more functionality when I can.
 
-- Working tooltips
+- ~~Working tooltips~~
 - Zoom functionality
 - ~~Dynamic date~~
 - ~~Data Credit~~
 - ~~Dynamic legend text~~
-- Pull data from CDC API
+- ~~Create data repository to pull from~~
 - Offset "no data" label
 - ~~Update information~~
 - State names
 - State borders
-
-**Caveat:** The visualization still needs to be annotated, and currently gives no indication how complete the data is. I'll be adding this in soon.

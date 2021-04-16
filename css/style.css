@@ -181,3 +181,54 @@ text {
 .y-axis line {
   stroke: #e5e2e0;
 }
+
+#footer-text {
+  font-size: 14px;
+  font-family: "Lato";
+  opacity: 0.5;
+}
+
+/* .d3-tip {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 0.3;
+} */
+
+#geo-name {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 7px;
+  font-size: 16px;
+  line-height: 0.3;
+  font-weight: 400;
+}
+
+.figures {
+  /* margin: 0; */
+  padding-top: 2px;
+  line-height: 0.2;
+  font-size: 13px;
+  font-weight: 300;
+  padding-bottom: 1px;
+  margin-bottom: 0;
+  margin-top: 1;
+}
+
+#date {
+  font-family: "Lato";
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 0.3;
+}
+
+#number {
+  font-family: "Lato";
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 0.3;
+  font-size: 13px;
+  font-weight: 300;
+}
