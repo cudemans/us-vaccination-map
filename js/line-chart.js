@@ -1,6 +1,6 @@
 const MARGINS_LINE = { TOP: 10, BOTTOM: 40, LEFT: 50, RIGHT: 250 };
 const HEIGHT_LINE = 500 - MARGINS_LINE.TOP - MARGINS_LINE.BOTTOM
-const WIDTH_LINE = 900 - MARGINS_LINE.LEFT - MARGINS_LINE.RIGHT
+const WIDTH_LINE = 700 - MARGINS_LINE.LEFT - MARGINS_LINE.RIGHT
 
 let formattedData
 let lineX
@@ -46,8 +46,6 @@ let drawLine = () => {
         .attr("y", d => line(d.values[d.values.length -1]))
         
         .text(d => d.key)
-
-
 }
 
 d3.csv("data/daily-covid-19-vaccination-doses-2.csv").then((data, error) => {

@@ -156,8 +156,9 @@ let drawMap = () => {
             })
             if (button == null) {
                 percentage = county["Series_Complete_Pop_Pct"]
-                
-            } else percentage = county[button]
+            } else {
+                percentage = county[button]
+            }  
             if (percentage == null) {
                 return "#cecfc8"
             }
@@ -267,12 +268,13 @@ let drawMap = () => {
 d3.json("data/counties.json").then(
     (data, error) => {
         if (error) {
+            console.log(error)
         } else {
             countyData = topojson.feature(data, data.objects.counties).features
             stateData = topojson.feature(data, data.objects.states).features
         }
 
-        d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/20210419_cdc_data.json").then(
+        d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/20210420_cdc_data.json").then(
             (data, error) => {
                 if (error) {
                     console.log(error);
@@ -296,8 +298,9 @@ d3.json("data/counties.json").then(
 
                 }
             }
-        )
+        ).catch((error) => {
+            console.log(error)
+        })
     }
 )
-
 

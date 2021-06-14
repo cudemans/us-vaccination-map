@@ -232,3 +232,14 @@ text {
   font-size: 13px;
   font-weight: 300;
 }
+
+#small-multiples {
+  display: block;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+}
+
+.axis {
+  opacity: 0.5;
+}
