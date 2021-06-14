@@ -8,10 +8,9 @@ async function getData() {
     // Set up accessor functions
     const xAccessor = d => dateParser(d.date)
     const yAccessor = d => d.people_vaccinated_per_hundred
-    const state = d => d.location
 
     //  Create a nested version of the data, sorted by location
-  const nested = d3.nest()
+    const nested = d3.nest()
         .key(d=> d.location)
         .entries(data)
 
@@ -61,7 +60,6 @@ async function getData() {
             .attr('width', dimensions.width)
             .attr("height", dimensions.height)
             
-        
     const bounds = wrapper.append('g')
         .style('transform', `translate(${dimensions.margins.left}px, ${dimensions.margins.top}px)`)
 
@@ -87,6 +85,7 @@ async function getData() {
     const xAxisGenerator = d3.axisBottom(xScale)
         .ticks(2)
         .tickSizeOuter(0)
+        // .tickValues(['January', 'April', 'July'])
         
     const xAxis = bounds.append('g')
         .attr('class', 'axis')
@@ -108,9 +107,7 @@ async function getData() {
      const date = formatter(new Date(lastDay))
      const finalData = nationalAv.filter(d => d.date === date)
      const lastPoint =  finalData[0].people_fully_vaccinated_per_hundred
-     console.log(lastPoint)
    
-
     // Create a line generator 
     const lineGenerator = d3.line()
         .defined(d => d.people_vaccinated_per_hundred != 0)
@@ -152,10 +149,7 @@ async function getData() {
             return Math.trunc(last.people_vaccinated_per_hundred)
         })
 
-        document.getElementById('percentage').textContent = lastPoint
-        const newDateFormat = d3.timeFormat("%B %-d")
-        document.getElementById('vac-date').textContent = newDateFormat(lastDay)
-        console.log(newDateFormat(lastDay))
+        document.getElementById('percentage').textContent = Math.trunc(lastPoint)
 }
 
 getData()

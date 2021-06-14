@@ -84,9 +84,7 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
             data.Date = parseTime(data.Date)
             return data
         })
-
         console.log(usComplete)
-
     }
 
     avLines = d3.line()
