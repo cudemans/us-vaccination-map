@@ -250,7 +250,7 @@ text {
   /* font-size: 20px; */
 
   width: 70%;
-  margin-left: 15%;
+  margin-left: 17%;
   margin-right: 10%;
 }
 
@@ -269,4 +269,5 @@ text {
 
 #multiple-text {
   color: rgb(112, 112, 112);
+  margin-left: 17%;
 }
