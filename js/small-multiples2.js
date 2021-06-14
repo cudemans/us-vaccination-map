@@ -151,43 +151,11 @@ async function getData() {
             
             return Math.trunc(last.people_vaccinated_per_hundred)
         })
-   
-    // // Draw lines
-    // const lines = bounds.selectAll('path')
-    //     .data(nested)
-    
-    // lines.enter()
-    //     .append('path')
-    //     .attr('d', d => lineGenerator(d.values))
-    //     .attr("fill", 'none')
-    //     .attr('stroke', 'black')
-    
-    // lines.append("path")
-    //     .attr("class", "line")
-    //     .attr("d", d => lineGenerator(d.values))
-    //     .style("stroke", 'black');
 
-    // // create circles
-    // // const circle = bounds.selectAll('circle')
-    // //     .data(newVar)
-
-    // // circle.enter()
-    // //     .append('circle')
-    // //     .attr("cx", d => xScale(xAccessor(d)))
-    // //     .attr("cy", d => yScale(yAccessor(d)))
-    // //     .attr("r", 5)
-    // //     .attr("fill", "black")
-
-    // // Create x axis
-    // const xAxisGenerator = d3.axisBottom(xScale)
-    // const xAxis = bounds.append('g')
-    //     .style("transform", `translateY(${dimensions.boundedHeight}px)`)
-    //     .call(xAxisGenerator)
-
-    // // Create y axisBottom
-    // const yAxisGenerator = d3.axisLeft(yScale)
-    // const yAxis = bounds.append('g')
-    //     .call(yAxisGenerator)
+        document.getElementById('percentage').textContent = lastPoint
+        const newDateFormat = d3.timeFormat("%B %-d")
+        document.getElementById('vac-date').textContent = newDateFormat(lastDay)
+        console.log(newDateFormat(lastDay))
 }
 
 getData()

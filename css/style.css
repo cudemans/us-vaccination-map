@@ -235,11 +235,38 @@ text {
 
 #small-multiples {
   display: block;
-  margin-left: 10%;
+  margin-left: 15%;
   margin-right: 10%;
-  width: 80%;
+  width: 75%;
 }
 
 .axis {
   opacity: 0.5;
+}
+
+.section-header {
+  font-family: "Lato";
+  color: #302f2f;
+  /* font-size: 20px; */
+
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 10%;
+}
+
+.text {
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 10%;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  font-family: "Lato";
+}
+
+#multiple-header {
+  margin-bottom: -10px;
+}
+
+#multiple-text {
+  color: rgb(112, 112, 112);
 }
