@@ -51,17 +51,24 @@ text {
   font-weight: 300;
 }
 
-#intro-format-green {
+.format-green {
   background-color: #1a9754;
   color: #ffffff;
-  border-radius: 2px;
+  border-radius: 3px;
+  font-weight: 400;
+}
+
+.format-red {
+  background-color: #a01300;
+  color: #ffffff;
+  border-radius: 3px;
   font-weight: 400;
 }
 
 #intro-format-grey {
   background-color: #cecfc8;
   color: #424242;
-  border-radius: 2px;
+  border-radius: 3px;
   font-weight: 400;
 }
 
