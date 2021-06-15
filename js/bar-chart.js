@@ -43,6 +43,27 @@ const chartSubtitle = chart.append("text")
     .attr("opacity", "0.6")
     .text("Rollout has accelerated since late February")
 
+// D3.ANNOTATION ONLY SEEMS TO WORK IN V4
+// const annotations = [
+//     {
+//         note: {
+//         label: "Here is the annotation label",
+//         title: "Annotation title"
+//         },
+//         x: 100,
+//         y: 100,
+//         dy: 100,
+//         dx: 100
+//     }
+//     ]
+
+// const makeAnnotations = d3.annotation()
+//   .annotations(annotations)
+// d3.select('#chart-area')
+//   .append("g")
+//   .call(makeAnnotations)
+    
+
 let drawChart = () => {
 
     const rects = gChart.selectAll("rect")
@@ -68,6 +89,8 @@ let drawChart = () => {
 
     // const avLineChart = gChart.append("path")
     //     .attr("d", avLines(avNest.value))
+
+
 
 }
 

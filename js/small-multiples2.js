@@ -65,10 +65,12 @@ async function getData() {
 
     // Create scales
     // x scale
+    const minDate = dateParser("2021-01-01")
     const xScale = d3.scaleTime()
-        .domain(d3.extent(data, xAccessor))
+        .domain([minDate,d3.max(data, xAccessor)])
         .range([0, dimensions.boundedWidth])
         .nice()
+        
     
     // y scale
     const yScale = d3.scaleLinear()
@@ -85,7 +87,7 @@ async function getData() {
     const xAxisGenerator = d3.axisBottom(xScale)
         .ticks(2)
         .tickSizeOuter(0)
-        // .tickValues(['January', 'April', 'July'])
+        .tickFormat(d3.timeFormat("%b"))
         
     const xAxis = bounds.append('g')
         .attr('class', 'axis')
@@ -107,6 +109,7 @@ async function getData() {
      const date = formatter(new Date(lastDay))
      const finalData = nationalAv.filter(d => d.date === date)
      const lastPoint =  finalData[0].people_fully_vaccinated_per_hundred
+     console.log(lastDay)
    
     // Create a line generator 
     const lineGenerator = d3.line()
@@ -133,7 +136,14 @@ async function getData() {
         .attr("y", -5)
         .attr("x", 2)
         .attr('font-size', '11.5px')
-        .text(function(d){ return(d.key)})
+        // .text(function(d){ return(d.key)})
+        .text(function(d) { 
+            if (d.key === 'District of Columbia') {
+                return 'D.C.'
+            } else {
+                return d.key
+            }
+        })
 
     bounds
         .append('text')
