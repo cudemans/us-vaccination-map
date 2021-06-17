@@ -8,7 +8,7 @@ body {
 }
 
 #page-wrap {
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
 }
 
@@ -135,7 +135,7 @@ text {
   margin-left: auto;
   margin-right: auto; */
   /* justify-content: center; */
-  /* align-items: center; */
+  align-items: center;
   display: block;
   margin: auto;
 }
@@ -233,7 +233,7 @@ text {
 #geo-name {
   margin: 0;
   padding-top: 0;
-  padding-bottom: 7px;
+  padding-bottom: 4px;
   font-size: 16px;
   line-height: 0.3;
   font-weight: 400;
@@ -246,6 +246,18 @@ text {
   font-size: 13px;
   font-weight: 300;
   padding-bottom: 1px;
+  margin-bottom: 0;
+  margin-top: 1;
+}
+
+#complete {
+  /* margin: 0; */
+  font-style: italic;
+  /* padding-top: 2px; */
+  line-height: 1;
+  font-size: 12px;
+  font-weight: 300;
+  /* padding-bottom: 1px; */
   margin-bottom: 0;
   margin-top: 1;
 }

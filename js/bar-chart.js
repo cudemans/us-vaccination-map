@@ -90,8 +90,6 @@ let drawChart = () => {
     // const avLineChart = gChart.append("path")
     //     .attr("d", avLines(avNest.value))
 
-
-
 }
 
 d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/_us_historical.json").then((data, error) => {

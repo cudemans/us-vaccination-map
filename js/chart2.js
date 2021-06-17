@@ -18,6 +18,28 @@ async function drawGeoMap() {
             return data
         })
 
+        for(let i = 0; i < data.length; i++) {
+            // for each vaccination data point, consider the .fips property
+            // this provides the link with the SVG values, in the matching property of .id
+            let fips = data[i].FIPS;
+           
+            // loop through the array of geometries for the counties (
+            let geometries = countyData;
+            for(let j = 0; j < geometries.length; j++) {
+              // consider the id of each array item
+              let id = geometries[j].id;
+              // if the fips value matches the id counterpart
+              if(fips === id) {
+                // update the object with the SVG values with the properties of the matching object in the vaccination array
+                geometries[j] = Object.assign({}, geometries[j], data[i]);
+                // stop looping as to find the next match
+                break;
+              }
+            }
+          }
+          
+        
+
     // The state geodata doesn't have state names - create an array to reference this data for labels
     const stateNames = await d3.tsv('https://gist.githubusercontent.com/mbostock/4090846/raw/07e73f3c2d21558489604a0bc434b3a5cf41a867/us-state-names.tsv')
     
@@ -65,12 +87,13 @@ async function drawGeoMap() {
     const legendArea = d3.select('#legend').append("svg")
         .attr("width", dimensions.width)
         .attr("height", 50)
+        
 
 
     let legendInner = legendArea.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${dimensions.width* 0.45}, 20)`)
-
+        .attr("transform", `translate(${dimensions.width* 0.39}, 20)`)
+        
     legendInner.append("text")
         .attr("class", 'legend-header')
         .attr("x", 250)
@@ -114,7 +137,6 @@ async function drawGeoMap() {
             .attr("width", "1.5px")
     })
 
-    // Add button info here
     // / Update button based on whether it is selected
     $(".button").on('click', function () {
         var thisBtn = $(this)
@@ -142,6 +164,12 @@ async function drawGeoMap() {
         drawMapInner()
     })
 
+    const dataAccessor = (item) => {
+        let fips = item['id']
+            let county = data.find(d => {
+                return d['FIPS'] == fips
+            })
+    }
      // / Data credit
     // const credit = bounds.append("text")
     //     .attr("class", "credit")
@@ -152,8 +180,21 @@ async function drawGeoMap() {
     //     .attr("font-style", "italic")
     //     .text("Data: CDC | Note: Data for Texas and Hawaii is missing.")
 
-    function drawMapInner() {
+    // Add tooltip
+    let tip = d3.tip()
+            .attr("class", "d3-tip")
+            tip.html(d => {
+                let figure = Number(100 - d.Completeness_pct).toFixed(1)
+                if (d.Series_Complete_Pop_Pct != null) {
+                    return `<p id="geo-name"><strong>${d.County}, ${d.StateName}</strong></p><p id="complete">${figure}% of vaccinations in ${d.StateName} did not  <br> specify a person's home county.</p><p class="figures">Total vaccinated: &nbsp;&nbsp;&nbsp;<strong>${d.Series_Complete_Pop_Pct}%</strong></p><p class="figures">12+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>${d.Series_Complete_12PlusPop_Pct}%</strong></p><p class="figures">18+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>${d.Series_Complete_18PlusPop_Pct}%</strong></p><p class="figures">65+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>${d.Series_Complete_65PlusPop_Pct}%</strong></p>`
+                } else {
+                    return `<p id="geo-name"><strong>${d.County}, ${d.StateName}</strong></p><p class="figures">Total vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p><p class="figures">18+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p><p class="figures">65+ vaccinated: &nbsp;&nbsp;&nbsp;<strong>No data</strong></p>`
+                } 
+            })
+            bounds.call(tip)
 
+
+    function drawMapInner() {
         // Create geopath
         const path = d3.geoPath()
 
@@ -176,20 +217,19 @@ async function drawGeoMap() {
                 .attr("class", "county")
                 .attr("stroke", "#ffffff")
                 .attr("stroke-width", "0.3px")
-                .on("mouseover", function (d) {
-                    d3.select(this).classed("shaded", true)
-                })
-                .on("mouseleave", function (d) {
-                    d3.select(this).classed("shaded", false)
-                })
+                // .on("mouseover", function (d) {
+                //     // d3.select(this).classed("shaded", true)
+                //     tip.show
+                // })
+                .on("mouseover", tip.show)
+                .on("mouseleave", tip.hide)
                 .merge(paths)
                 .transition(t)
                 .attr("fill", function(item) {
                     let fips = item['id']
                     let county = data.find(d => {
-                        return d['FIPS'] == fips  
+                        return d['FIPS'] == fips
                     })
-                    
                     if (county) {
                         if (button == null) {
                             percentage = county["Series_Complete_Pop_Pct"]
@@ -220,28 +260,6 @@ async function drawGeoMap() {
                         } else return "#008b41"
                     } else return "#cecfc8"
                  })
-            
-
-                // Adds state labels
-                // bounds.append("g")
-                //     .attr("class", "states-names")
-                //     .selectAll("text")
-                //     .data(stateData)
-                //     .enter()
-                //     .append("svg:text")
-                //     .text(function(d){
-                //         return names[d.id];
-                //       })
-                //     .attr("x", function(d){
-                //         return path.centroid(d)[0];
-                        
-                //     })
-                //     .attr("y", function(d){
-                //         return  path.centroid(d)[1];
-                //     })
-                //     .attr("text-anchor","middle")
-                //     .attr('fill', 'black');
-                
              
                 //  Adds state boundaries
                 bounds.append("path")
@@ -268,7 +286,6 @@ async function drawGeoMap() {
                     //         }
                     //     })
                     
-                    
             }
 
 
@@ -282,6 +299,26 @@ async function drawGeoMap() {
     document.getElementById("update").innerText = `Updated: ${formatDate(date)}`
 }   
 
-    
-
 drawGeoMap()
+
+ // Adds state labels
+                // bounds.append("g")
+                //     .attr("class", "states-names")
+                //     .selectAll("text")
+                //     .data(stateData)
+                //     .enter()
+                //     .append("svg:text")
+                //     .text(function(d){
+                //         return names[d.id];
+                //       })
+                //     .attr("x", function(d){
+                //         return path.centroid(d)[0];
+                        
+                //     })
+                //     .attr("y", function(d){
+                //         return  path.centroid(d)[1];
+                //     })
+                //     .attr("text-anchor","middle")
+                //     .attr('fill', 'black');
+                
+
