@@ -99,6 +99,7 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
         console.log(error)
     } else {
         usComplete = data['vaccination_trends_data']
+        console.log(usComplete)
 
         delete usComplete.runid
 
@@ -107,7 +108,7 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
             data.Date = parseTime(data.Date)
             return data
         })
-        console.log(usComplete)
+        
     }
 
     avLines = d3.line()
@@ -124,11 +125,11 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
         d.key = new Date(d.key)
     })
 
-    console.log(avNest)
 
     x = d3.scaleTime()
         .domain([new Date(d3.min(usComplete, d => d.Date)), new Date(d3.max(usComplete, d => d.Date))])
         .range([0, CHART_WIDTH])
+        
 
     y = d3.scaleLinear()
         .domain([0, d3.max(usComplete, d => d.Administered_Daily)])
@@ -136,6 +137,9 @@ d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/
 
     const xAxis = d3.axisBottom(x)
         .ticks(5)
+        .tickSizeOuter(0)
+        .tickFormat(d3.timeFormat("%B"))
+
     gChart.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0, ${CHART_HEIGHT})`)

@@ -118,6 +118,9 @@ $(".button").on("click", function () {
 // Draw map
 let drawMap = () => {
 
+    let tip = d3.tip()
+        .attr("class", "d3-tip")
+
     // add transiton
     const t = d3.transition()
         .duration(50)
@@ -151,9 +154,10 @@ let drawMap = () => {
         .transition(t)
         .attr("fill", (item) => {
             let fips = item['id']
-            let county = vacData.find(d => {
+            county = vacData.find(d => {
                 return d['FIPS'] == fips
             })
+            if (county) {
             if (button == null) {
                 percentage = county["Series_Complete_Pop_Pct"]
             } else {
@@ -181,6 +185,7 @@ let drawMap = () => {
             } else if (percentage <= 90) {
                 return "#1a9754"
             } else return "#008b41"
+        } else return "#cecfc8"
         })
         .attr("tot_pop", item => {
             let fips = item['id']
@@ -231,9 +236,8 @@ let drawMap = () => {
             return complete
         })
 
-        let tip = d3.tip()
-        .attr("class", "d3-tip")
-        .html(function() {
+        
+        tip.html(function() {
             
             let totPer = document.querySelectorAll(".county")
             $(totPer).on("mouseover", function() {
@@ -274,7 +278,7 @@ d3.json("data/counties.json").then(
             stateData = topojson.feature(data, data.objects.states).features
         }
 
-        d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/20210420_cdc_data.json").then(
+        d3.json("https://raw.githubusercontent.com/simprisms/vaccination-data/main/data/20210520_cdc_data.json").then(
             (data, error) => {
                 if (error) {
                     console.log(error);
@@ -288,7 +292,7 @@ d3.json("data/counties.json").then(
                         return data
                     })
 
-                    console.log(vacData)
+                    
 
                     // Set update date on webpage
                     const date = parseDate(vacData[0].Date)
