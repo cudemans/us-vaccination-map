@@ -88,8 +88,6 @@ async function drawGeoMap() {
         .attr("width", dimensions.width)
         .attr("height", 50)
         
-
-
     let legendInner = legendArea.append("g")
         .attr("class", "legend")
         .attr("transform", `translate(${dimensions.width* 0.39}, 20)`)
@@ -170,15 +168,16 @@ async function drawGeoMap() {
                 return d['FIPS'] == fips
             })
     }
-     // / Data credit
-    // const credit = bounds.append("text")
-    //     .attr("class", "credit")
-    //     .attr("x", dimensions.boundedWidth * 0.5)
-    //     .attr("y", dimentions.boundedHeight)
-    //     .attr("font-size", "12px")
-    //     .attr("opacity", "0.5")
-    //     .attr("font-style", "italic")
-    //     .text("Data: CDC | Note: Data for Texas and Hawaii is missing.")
+
+    // Data credit
+    const dataCredit = bounds.append("text")
+        .attr("y", dimensions.boundedHeight)
+        .attr("x", dimensions.boundedWidth / 2 + dimensions.boundedWidth / 6)
+        .attr("tet-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("opacity", "0.5")
+        .attr("font-style", "italic")
+        .text("Data: CDC | Note: Data for Texas and Hawaii is missing.")
 
     // Add tooltip
     let tip = d3.tip()
