@@ -4,9 +4,7 @@
 
 Written in D3.js, this visualization maps the US' vaccination program. Data for this project can be found [here](https://github.com/simprisms/vaccination-data). A live version of the visualization can be found [here](https://covid-vac-us.herokuapp.com).
 
-## Upcoming features
-
-The map is currently feature-light, but I'll add more functionality when I can.
+## To do
 
 - ~~Working tooltips~~
 - Zoom functionality
@@ -14,7 +12,7 @@ The map is currently feature-light, but I'll add more functionality when I can.
 - ~~Data Credit~~
 - ~~Dynamic legend text~~
 - ~~Create data repository to pull from~~
-- Offset "no data" label
 - ~~Update information~~
 - State names
-- State borders
+- ~~State borders~~
+- ~~State small multiples~~
